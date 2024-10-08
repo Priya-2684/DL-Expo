@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article Summarizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-top: 50px;
+            font-size: 2em; /* Reduced font size */
+            animation: glitch 1s infinite;
+            position: relative;
+            z-index: 2;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+            position: relative;
+            z-index: 2;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.5s;
+        }
+
+        label {
+            font-size: 14px; /* Reduced font size */
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        input[type="text"],
+        textarea,
+        select {
+            padding: 10px;
+            width: 100%;
+            max-width: 350px; /* Slightly reduced width */
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            resize: none;
+            font-size: 14px; /* Reduced font size */
+            background-color: rgba(255, 255, 255, 0.8);
+            outline: none;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.8);
+        }
+
+        textarea {
+            height: 100px; /* Reduced height */
+        }
+
+        input[type="submit"] {
+            padding: 10px 25px; /* Reduced padding */
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 14px; /* Reduced font size */
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #357abd;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        p {
+            text-align: center;
+            color: red;
+        }
+
+        #input-choice {
+            margin-bottom: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        #text-input,
+        #url-input {
+            text-align: center;
+        }
+
+        /* Video Background Styles */
+        #video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            filter: blur(5px);
+        }
+
+        /* Overlay Gradient */
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4));
+            z-index: 1;
+        }
+
+        /* Glitch Animation */
+        @keyframes glitch {
+            0% {
+                text-shadow: 1px 1px 0 rgba(255, 0, 0, 0.8), -1px -1px 0 rgba(0, 255, 0, 0.8);
+                transform: translate(0);
+            }
+
+            20% {
+                text-shadow: -1px -1px 0 rgba(255, 255, 0, 0.8), 1px 1px 0 rgba(0, 0, 255, 0.8);
+                transform: translate(-2px, -2px);
+            }
+
+            40% {
+                text-shadow: 1px 1px 0 rgba(0, 255, 255, 0.8), -1px -1px 0 rgba(255, 0, 255, 0.8);
+                transform: translate(2px, 2px);
+            }
+
+            60% {
+                text-shadow: -1px -1px 0 rgba(255, 0, 0, 0.8), 1px 1px 0 rgba(0, 255, 0, 0.8);
+                transform: translate(-2px, -2px);
+            }
+
+            100% {
+                text-shadow: 1px 1px 0 rgba(255, 255, 0, 0.8), -1px -1px 0 rgba(0, 0, 255, 0.8);
+                transform: translate(0);
+            }
+        }
+
+        /* Fade-in Animation */
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <video id="video-background" autoplay muted loop>
+        <source src="https://cdn.pixabay.com/video/2023/07/08/170655-843752693_large.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <div id="overlay"></div> <!-- Gradient overlay -->
+
+    <h1>Article Summarizer</h1>
+    <form action="/summarize" method="POST">
+        <label for="input-choice">Choose input method:</label>
+        <select name="input-choice" id="input-choice" onchange="toggleInputFields()" required>
+            <option value="url">Summarize from URL</option>
+            <option value="text">Paste Article Content</option>
+        </select>
+
+        <div id="url-input">
+            <label for="url">Enter the URL of the article:</label>
+            <input type="text" id="url" name="url" placeholder="e.g., https://www.example.com">
+        </div>
+
+        <div id="text-input" style="display: none;">
+            <textarea id="article-text" name="article-text" placeholder="Paste your article content here..."></textarea>
+        </div>
+
+        <input type="submit" value="Summarize">
+    </form>
+
+    {% if error %}
+    <p>{{ error }}</p>
+    {% endif %}
+
+    <script>
+        function toggleInputFields() {
+            const choice = document.getElementById('input-choice').value;
+            const urlInput = document.getElementById('url');
+            const textInput = document.getElementById('article-text');
+
+            if (choice === 'url') {
+                document.getElementById('url-input').style.display = 'block';
+                document.getElementById('text-input').style.display = 'none';
+                urlInput.required = true;
+                textInput.required = false;
+            } else if (choice === 'text') {
+                document.getElementById('url-input').style.display = 'none';
+                document.getElementById('text-input').style.display = 'block';
+                urlInput.required = false;
+                textInput.required = true;
+            }
+        }
+    </script>
+</body>
+
+</html>
