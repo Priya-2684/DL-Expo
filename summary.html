@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article Summary</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            color: #4a90e2;
+            margin-top: 50px;
+        }
+        .word-counts {
+            max-width: 800px;
+            margin: 20px auto;
+            line-height: 1.6;
+            text-align: center;
+        }
+        .word-counts strong {
+            color: #4a90e2;
+        }
+        h2 {
+            max-width: 800px;
+            margin: 20px auto;
+            line-height: 1.6;
+            color: #333;
+        }
+        p {
+            max-width: 800px;
+            margin: 20px auto;
+            line-height: 1.6;
+        }
+        a {
+            display: block;
+            margin: 20px auto;
+            text-align: center;
+            text-decoration: none;
+            background-color: #4a90e2;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            width: fit-content;
+        }
+        a:hover {
+            background-color: #357abd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Article Summary</h1>
+    
+    <!-- Word counts section at the top -->
+    <div class="word-counts">
+        <p><strong>Original Article Word Count:</strong> {{ original_word_count }} words</p>
+        <p><strong>Summarized Article Word Count:</strong> {{ summarized_word_count }} words</p>
+    </div>
+
+    <!-- Summary section below the word counts -->
+    <h2>Summary:</h2>
+    <p>{{ summary }}</p>
+
+    <!-- Button to summarize another article -->
+    <a href="/">Summarize Another Article</a>
+</body>
+</html>
